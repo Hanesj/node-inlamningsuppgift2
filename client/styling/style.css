@@ -1,0 +1,80 @@
+/*  Reset  */
+html {
+	box-sizing: border-box;
+	font-size: 16px;
+}
+
+*,
+*:before,
+*:after {
+	box-sizing: inherit;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ol,
+ul {
+	margin: 0;
+	padding: 0;
+	font-weight: normal;
+}
+
+ol,
+ul {
+	list-style: none;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+/* start */
+.header-div {
+	background-color: rgb(221, 159, 78);
+	display: flex;
+	justify-content: space-around;
+}
+#login {
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	padding: 1.2rem;
+	width: 20%;
+	input {
+		height: 2rem;
+	}
+}
+h1 {
+	flex-grow: 1;
+	text-align: center;
+	font-size: 3rem;
+	padding: 2rem;
+	background-color: rgba(7, 121, 221, 0.829);
+}
+#container {
+	display: flex;
+	justify-content: space-between;
+}
+#first {
+	background-color: rgb(84, 192, 251);
+	width: 33%;
+}
+#second {
+	background-color: rgb(181, 111, 247);
+	flex-grow: 1;
+}
+#third {
+	background-color: cadetblue;
+	width: 25%;
+}
+#first,
+#second,
+#third {
+	height: 100vh;
+}
