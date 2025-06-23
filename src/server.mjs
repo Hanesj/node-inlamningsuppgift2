@@ -12,9 +12,9 @@ import authRouter from './routes/auth-routes.mjs';
 import errorHandler from './middleware/errorHandler.mjs';
 
 await connectDB();
-const chainDB = await new BlockChainRepository().get();
+//const chainDB = await new BlockChainRepository().get();
 
-export const blockChain = new Blockchain({ dbChain: chainDB });
+export const blockChain = new Blockchain();
 export const transactionPool = new TransactionPool();
 export const networkServer = new Network({
 	blockchain: blockChain,

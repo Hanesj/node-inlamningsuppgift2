@@ -2,6 +2,7 @@ const form = document.querySelector('#login');
 const email = document.querySelector('#email');
 const password = document.querySelector('#password');
 const trxBtn = document.querySelector('#trx');
+const blockBtn = document.querySelector('#blocks');
 
 let token = undefined;
 const URL = 'http://localhost:4000/api';
@@ -41,7 +42,21 @@ const getTrx = async () => {
 		console.log(result);
 	}
 };
+const getBlocks = async () => {
+	const response = await fetch(`${URL}/`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			authorization: `bearer ${token}`,
+		},
+	});
+	if (response.ok) {
+		const result = await response.json();
+		result.data.forEach((d) => console.log(d.data));
+	}
+};
 
 form.addEventListener('submit', handleLogin);
 trxBtn.addEventListener('click', getTrx);
+blockBtn.addEventListener('click', getBlocks);
 document.addEventListener('DOMContentLoaded', initApp);

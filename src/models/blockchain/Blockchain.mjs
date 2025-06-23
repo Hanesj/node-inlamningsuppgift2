@@ -2,10 +2,11 @@ import { createHash } from '../../utilitites/hash.mjs';
 import Block from './Block.mjs';
 
 export default class Blockchain {
-	constructor({ dbChain }) {
-		dbChain.length > 0
-			? (this.chain = dbChain)
-			: (this.chain = [Block.genesis()]);
+	constructor() {
+		//dbChain.length > 0
+		//? (this.chain = dbChain)
+		//: (this.chain = [Block.genesis()]);
+		this.chain = [Block.genesis()];
 	}
 	addBlock({ data }) {
 		const addedBlock = Block.mineBlock({
