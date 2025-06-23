@@ -1,5 +1,5 @@
 import express from 'express';
-import { protect } from '../controllers/auth-controller.mjs';
+import { protect, authorize } from '../controllers/auth-controller.mjs';
 import {
 	addTransaction,
 	listAllTransactions,
@@ -11,7 +11,7 @@ export const transactionRouter = express.Router();
 transactionRouter
 	.route('/transactions')
 	.get(listAllTransactions)
-	.post(protect, addTransaction);
+	.post(protect, authorize('user', 'miner'), addTransaction);
 
 transactionRouter.route('/transactions/mine').get(mineTransactionPool);
 

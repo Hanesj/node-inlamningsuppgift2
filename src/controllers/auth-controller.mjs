@@ -48,8 +48,10 @@ export const protect = catchErrorAsync(async (req, res, next) => {
 	next();
 });
 
-const authorize = (...roles) => {
+export const authorize = (...roles) => {
+	console.log(roles);
 	return (req, res, next) => {
+		console.log(req.user);
 		if (!roles.includes(req.user.role)) {
 			return next(new AppError('Du har ej tillräcklig behörighet'));
 		}

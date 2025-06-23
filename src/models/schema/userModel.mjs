@@ -29,6 +29,13 @@ const userSchema = new mongoose.Schema({
 		minlength: 8,
 		select: false,
 	},
+	publickey: {
+		type: String,
+		unique: true,
+	},
+	wallet: {
+		type: mongoose.Schema.Types.Mixed,
+	},
 });
 
 userSchema.pre('save', async function (next) {
