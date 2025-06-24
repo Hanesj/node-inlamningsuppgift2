@@ -9,5 +9,5 @@ export default async (err, req, res, next) => {
 		message: err.message,
 	});
 
-	next();
+	//next();
 };

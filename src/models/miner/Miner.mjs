@@ -6,18 +6,18 @@ export default class Miner {
 		this.networkServer = networkServer;
 		this.transactionPool = transactionPool;
 		this.wallet = wallet;
+		//console.log(wallet);
 	}
 	mineTransactions() {
-		// Hamta giltiga transaktioner
 		const validateTransactions =
 			this.transactionPool.validateTransactions();
+		//console.log(validateTransactions);
 		// Skapa beloning
 
 		validateTransactions.push(
 			Transaction.transactionReward({ miner: this.wallet })
 		);
-		// skapa block emd alla giltiga transaktioner
-		// och placer i kedjan
+
 		this.blockchain.addBlock({ data: validateTransactions });
 		this.networkServer.broadCastChain();
 		this.transactionPool.clearTransactionPool();

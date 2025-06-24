@@ -11,10 +11,11 @@ class Wallet {
 	static calculateBalance({ chain, address }) {
 		let total = 0;
 		let hasMadeNewTrx = false;
-
+		//console.log('???');
 		for (let i = chain.length - 1; i > 0; i--) {
 			const block = chain[i];
 
+			//console.log('??');
 			for (let trx of block.data) {
 				if (trx.inputMap.address === address) {
 					hasMadeNewTrx = true;
@@ -33,6 +34,7 @@ class Wallet {
 
 	createTransaction({ amount, recipient, chain }) {
 		if (chain) {
+			//console.log(chain);
 			this.balance = Wallet.calculateBalance({
 				chain,
 				address: this.publicKey,

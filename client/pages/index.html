@@ -5,11 +5,13 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Crypto chain</title>
 		<link rel="stylesheet" href="../styling/style.css" />
-		<script src="../scripts/app.js" defer></script>
+		<script type="module" src="../scripts/app.js" defer></script>
 	</head>
 	<body>
 		<div class="header-div">
 			<h1>Crypto chain</h1>
+			<button type="button" class="btn" id="logout">Logga ut</button>
+
 			<form id="login">
 				<input
 					type="email"
@@ -27,13 +29,57 @@
 		</div>
 		<div id="container">
 			<div id="first">
-				<button type="button" id="trx">Lista transaktioner</button>
+				<button type="button" class="btn" id="trx">
+					Lista transaktionspool
+				</button>
+				<section id="trxSection"></section>
 			</div>
 			<div id="second">
-				<button type="button" id="blocks">Lista blocks</button>
+				<button type="button" class="btn" id="blocks">
+					Lista block
+				</button>
+				<form id="regForm">
+					<input
+						type="text"
+						name="firstName"
+						id="firstName"
+						placeholder="förnamn" />
+
+					<input
+						type="text"
+						name="lastName"
+						id="lastName"
+						placeholder="efternamn" />
+					<input
+						type="email"
+						name="email"
+						id="email"
+						placeholder="email@gmail.com" />
+
+					<input
+						type="password"
+						name="password"
+						id="password"
+						placeholder="password" />
+					<button type="submit">Registrera</button>
+				</form>
 				<section id="blockSection"></section>
 			</div>
-			<div id="third">3</div>
+			<div id="third">
+				<form id="trxForm">
+					<button type="submit" class="btn">Skicka</button>
+					<input
+						type="text"
+						placeholder="mottagare..."
+						id="recipient"
+						name="recipient" />
+					<input
+						type="number"
+						name="amount"
+						placeholder="mängd..."
+						id="amount" />
+				</form>
+			</div>
 		</div>
 	</body>
 </html>

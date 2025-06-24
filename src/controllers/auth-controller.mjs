@@ -3,6 +3,7 @@ import { promisify } from 'util';
 import { catchErrorAsync } from '../utilitites/catchErrorAsync.mjs';
 import AppError from '../models/appError.mjs';
 import UserRepository from '../repository/User-repository.mjs';
+import Wallet from '../models/wallet/Wallet.mjs';
 
 export const loginUser = catchErrorAsync(async (req, res, next) => {
 	const { email, password } = req.body;
@@ -21,7 +22,7 @@ export const loginUser = catchErrorAsync(async (req, res, next) => {
 	// Skapa ett jwt token...
 	const token = createToken(user._id);
 
-	res.cookie('jwt');
+	//res.cookie('jwt');
 
 	res.status(200).json({
 		success: true,
@@ -45,13 +46,17 @@ export const protect = catchErrorAsync(async (req, res, next) => {
 	const decoded = await verifyToken(token);
 	const user = await new UserRepository().findById(decoded.id);
 	req.user = user;
+	//const wallet = new Wallet();
+	////console.log(wallet.keyPair);
+	//wallet.publicKey = req.user.publickey;
+	//req.user.wallet = wallet;
+	//console.log(wallet);
+
 	next();
 });
 
 export const authorize = (...roles) => {
-	console.log(roles);
 	return (req, res, next) => {
-		console.log(req.user);
 		if (!roles.includes(req.user.role)) {
 			return next(new AppError('Du har ej tillräcklig behörighet'));
 		}

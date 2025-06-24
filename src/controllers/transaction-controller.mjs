@@ -3,23 +3,40 @@ import {
 	wallet,
 	networkServer,
 	blockChain,
+	minerWallet,
 } from '../server.mjs';
 
 import Miner from '../models/miner/Miner.mjs';
 import Wallet from '../models/wallet/Wallet.mjs';
 import { BlockChainRepository } from '../repository/Blockchain-repository.mjs';
+import transactionModel from '../models/schema/transactionModel.mjs';
 
-export const addTransaction = (req, res) => {
+export const addTransaction = async (req, res) => {
 	const { amount, recipient } = req.body;
+	//const userWallet = new Wallet();
+	//userWallet.publicKey = req.user.publickey;
+	//console.log(req.user.publickey);
+	//req.user.wallet = userWallet;
 	let transaction = transactionPool.transactionExists({
 		address: wallet.publicKey,
 	});
+	//console.log(req.user.publickey);
 	try {
 		if (transaction) {
 			transaction.update({ sender: wallet, recipient, amount });
 		} else {
-			transaction = wallet.createTransaction({ recipient, amount });
+			//console.log(userWallet.balance - amount);
+			transaction = wallet.createTransaction({
+				recipient,
+				amount,
+				chain: blockChain.chain,
+			});
 		}
+		console.log(req.user.id);
+		await transactionModel.create({
+			userId: req.user.id,
+			transaction: transaction,
+		});
 		transactionPool.addTransaction(transaction);
 		networkServer.broadCastTransaction(transaction);
 		res.status(201).json({
@@ -38,6 +55,7 @@ export const addTransaction = (req, res) => {
 
 export const getWalletInfo = (req, res) => {
 	const address = wallet.publicKey;
+	//const address = req.user.publickey;
 	const balance = Wallet.calculateBalance({
 		chain: blockChain.chain,
 		address,
@@ -57,9 +75,11 @@ export const listAllTransactions = (req, res) => {
 };
 
 export const mineTransactionPool = async (req, res) => {
+	//console.log(req.user);
 	const miner = new Miner({
 		transactionPool,
-		wallet,
+		//wallet: req.user.wallet,
+		wallet: minerWallet,
 		blockchain: blockChain,
 		networkServer,
 	});
@@ -75,7 +95,7 @@ export const mineTransactionPool = async (req, res) => {
 		blockchain: blockChain.chain,
 	});
 
-	console.log('MongoDB-svar:', result);
+	//console.log('MongoDB-svar:', result);
 
 	res.status(200).json({
 		success: true,

@@ -1,3 +1,4 @@
+import blockModel from '../schema/blockModel.mjs';
 import { createHash } from '../../utilitites/hash.mjs';
 import Block from './Block.mjs';
 
@@ -8,12 +9,19 @@ export default class Blockchain {
 		//: (this.chain = [Block.genesis()]);
 		this.chain = [Block.genesis()];
 	}
-	addBlock({ data }) {
+	async addBlock({ data }) {
 		const addedBlock = Block.mineBlock({
 			previousBlock: this.chain[this.chain.length - 1],
 			data,
 		});
-
+		await blockModel.create({
+			timestamp: addedBlock.timestamp,
+			data: addedBlock.data,
+			hash: addedBlock.hash,
+			lastHash: addedBlock.lastHash,
+			nonce: addedBlock.nonce,
+			difficulty: addedBlock.difficulty,
+		});
 		this.chain.push(addedBlock);
 	}
 	static isValid(chain) {

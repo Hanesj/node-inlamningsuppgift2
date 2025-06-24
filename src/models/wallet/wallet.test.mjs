@@ -1,11 +1,9 @@
 import { beforeEach, expect, it, vi } from 'vitest';
 import Wallet from './Wallet.mjs';
 import { keyMgr, verifySignature } from '../../utilitites/keyManager.mjs';
-import { createHash } from '../../utilitites/hash.mjs';
 import Transaction from './Transaction.mjs';
 import Blockchain from '../blockchain/Blockchain.mjs';
 import { INITIAL_BALANCE } from '../../utilitites/config.mjs';
-import { blockChain } from '../../server.mjs';
 describe('Wallet', () => {
 	let wallet;
 

@@ -13,6 +13,8 @@ transactionRouter
 	.get(listAllTransactions)
 	.post(protect, authorize('user', 'miner'), addTransaction);
 
-transactionRouter.route('/transactions/mine').get(mineTransactionPool);
+transactionRouter
+	.route('/transactions/mine')
+	.get(protect, authorize('user', 'miner'), mineTransactionPool);
 
-transactionRouter.route('/info').get(protect, getWalletInfo);
+transactionRouter.route('/info').get(protect, authorize('user'), getWalletInfo);

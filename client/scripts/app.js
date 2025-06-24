@@ -1,128 +1,182 @@
+import { displayBlocks, displayTrx } from './dom.js';
 const form = document.querySelector('#login');
-const email = document.querySelector('#email');
-const password = document.querySelector('#password');
+const regForm = document.querySelector('#regForm');
+
+const logoutBtn = document.querySelector('#logout');
+
 const trxBtn = document.querySelector('#trx');
 const blockBtn = document.querySelector('#blocks');
 const blkSection = document.querySelector('#blockSection');
 
+const trxSection = document.querySelector('#trxSection');
+
+const trxForm = document.querySelector('#trxForm');
+
 let token = undefined;
+let mineBtn = undefined;
 const URL = 'http://localhost:4000/api';
 const initApp = () => {
-	if (localStorage.getItem('jwt')) token = localStorage.getItem('jwt');
-	console.log(token);
+	if (localStorage.getItem('jwt')) {
+		token = localStorage.getItem('jwt');
+		form.style.display = 'none';
+		logoutBtn.style.display = 'block';
+		regForm.style.display = 'none';
+	}
 };
 const handleLogin = async (e) => {
 	e.preventDefault();
-	console.log(email.value, password.value);
-
-	const response = await fetch(`${URL}/auth`, {
-		headers: { 'Content-Type': 'application/json' },
-		method: 'POST',
-		body: JSON.stringify({
-			email: 'test@mail.com',
-			password: 'password123',
-		}),
-	});
-	if (response.ok) {
-		const result = await response.json();
-		console.log(result.data.token);
-		localStorage.setItem('jwt', result.data.token);
+	//console.log(email.value, password.value);
+	const formData = new FormData(form);
+	const formObj = Object.fromEntries(formData);
+	try {
+		const response = await fetch(`${URL}/auth`, {
+			headers: { 'Content-Type': 'application/json' },
+			method: 'POST',
+			body: JSON.stringify(formObj),
+		});
+		if (response.ok) {
+			const result = await response.json();
+			localStorage.setItem('jwt', result.data.token);
+			form.style.display = 'none';
+			logoutBtn.style.display = 'block';
+			window.location.reload();
+		} else {
+			alert('Fel lösen/email');
+		}
+	} catch (error) {
+		console.log(error);
 	}
+	form.reset();
+};
+
+const handleRegister = async (e) => {
+	e.preventDefault();
+	const formData = new FormData(regForm);
+	const formObj = Object.fromEntries(formData);
+	console.log(formObj);
+	try {
+		const response = await fetch(`${URL}/users`, {
+			headers: { 'Content-Type': 'application/json' },
+			method: 'POST',
+			body: JSON.stringify(formObj),
+		});
+		if (response.ok) {
+			alert('Konto skapat');
+			regForm.style.display = 'none';
+			regForm.reset();
+		}
+	} catch (error) {}
+};
+
+const handleLogout = async () => {
+	localStorage.removeItem('jwt');
+
+	form.style.display = 'flex';
+	logoutBtn.style.display = 'none';
+
+	window.location.reload();
 };
 
 const getTrx = async () => {
-	const response = await fetch(`${URL}/wallet/transactions`, {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-			authorization: `bearer ${token}`,
-		},
-	});
-	if (response.ok) {
-		const result = await response.json();
-		console.log(result);
-	}
-};
-const getBlocks = async () => {
-	const response = await fetch(`${URL}/`, {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-			authorization: `bearer ${token}`,
-		},
-	});
-	if (response.ok) {
-		const result = await response.json();
-		//	result.data.forEach((d) => console.log(d.data));
-		//console.log(result.data[2].hash);
-		//console.log(result.data);
-		//blkSection.style.display = 'block';
-		//const blkHash = result.data[1].hash;
-		//const t = result.data.map((b) => b.data.map((b) => b.outputMap));
-		//const r = t[1][0];
-		//console.log(t);
-		//console.log(r);
-
-		//let html = `<h4>block-hash: ${blkHash}</h4><br />
-		//<h4>Transaktioner i block:</h4>
-		//<i>Mottagare: </i><ul>`;
-		//let sender = ``;
-
-		//for (let key in r) {
-		//if (key.length > 10) {
-		//sender = `${key.substring(0, 9)}...: ${r[key]}`;
-		//} else {
-		//html += `<li>${key}: ${r[key]}</li>`;
-		//}
-		//}
-		//html += `</ul><i>Avsändare: <br /> ${sender}</i>`;
-
-		//blkSection.innerHTML = html;
-
-		blkSection.style.display = 'block';
-
-		let html = '';
-
-		result.data.splice(1).forEach((block) => {
-			//console.log(block);
-			const blkHash = block.hash;
-			html += `<p>------------------------------------------------------------------------------------------------------</p>
-			<h4>Block-hash: ${blkHash}</h4><br />
-	         <h4>Transaktioner i block:</h4>`;
-
-			block.data.forEach((transaction) => {
-				//console.log(transaction.inputMap.address);
-				const outputMap = transaction.outputMap;
-				let outputs, sender;
-				if (transaction.inputMap.address === '#reward-address') {
-					outputs = `<i>Mottagare: </i><ul>
-					<li>${transaction.inputMap.address}</li>`;
-					sender = `Mining-reward`;
-				} else {
-					sender = '';
-					outputs = '<i>Mottagare: </i><ul>';
-
-					for (let key in outputMap) {
-						if (key.length > 10) {
-							// Antagligen en lång public key, tolkas som avsändare
-							sender = `${key.substring(0, 9)}...: ${
-								outputMap[key]
-							}`;
-						} else {
-							outputs += `<li>${key}: ${outputMap[key]}</li>`;
-						}
-					}
-				}
-				outputs += '</ul>';
-
-				html += `${outputs}<i>Avsändare: <br /> ${sender}</i><br /><br />`;
-			});
+	try {
+		const response = await fetch(`${URL}/wallet/transactions`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				authorization: `bearer ${token}`,
+			},
 		});
-
-		blkSection.innerHTML = html;
+		if (response.ok) {
+			const result = await response.json();
+			trxSection.style.display = 'block';
+			let html = displayTrx(result.data);
+			trxSection.innerHTML = html;
+			if (document.querySelector('#mineBtn'))
+				mineBtn = document
+					.querySelector('#mineBtn')
+					.addEventListener('click', mineBlock);
+		} else {
+			alert('Måste logga in');
+		}
+	} catch (error) {
+		console.log(error);
 	}
 };
 
+const mineBlock = async () => {
+	try {
+		const response = await fetch(`${URL}/wallet/transactions/mine`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				authorization: `bearer ${token}`,
+			},
+		});
+		if (response.ok) {
+			//const result = await response.json();
+			await getBlocks();
+			await getTrx();
+		}
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+const getBlocks = async () => {
+	try {
+		const response = await fetch(`${URL}/`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				authorization: `bearer ${token}`,
+			},
+		});
+		if (response.ok) {
+			const result = await response.json();
+
+			blkSection.style.display = 'block';
+
+			let html = displayBlocks(result.data);
+
+			blkSection.innerHTML = html;
+		} else {
+			alert('Måste logga in');
+		}
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+const sendTrx = async (e) => {
+	e.preventDefault();
+	const formData = new FormData(trxForm);
+	const formObj = Object.fromEntries(formData);
+	formObj.amount = parseInt(formObj.amount);
+	try {
+		const response = await fetch(`${URL}/wallet/transactions`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				authorization: `bearer ${token}`,
+			},
+			body: JSON.stringify(formObj),
+		});
+		if (response.ok) {
+			//const result = await response.json();
+			trxForm.reset();
+			await getTrx();
+		} else {
+			alert('For lågt saldo..');
+			trxForm.reset();
+		}
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+regForm.addEventListener('submit', handleRegister);
+logoutBtn.addEventListener('click', handleLogout);
+trxForm.addEventListener('submit', sendTrx);
 form.addEventListener('submit', handleLogin);
 trxBtn.addEventListener('click', getTrx);
 blockBtn.addEventListener('click', getBlocks);

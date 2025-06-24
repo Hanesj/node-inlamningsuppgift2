@@ -6,7 +6,7 @@ import { transactionRouter } from './routes/transaction-routes.mjs';
 import TransactionPool from './models/wallet/TransactionPool.mjs';
 import Wallet from './models/wallet/Wallet.mjs';
 import { connectDB } from './db/database.mjs';
-import { BlockChainRepository } from './repository/Blockchain-repository.mjs';
+//import { BlockChainRepository } from './repository/Blockchain-repository.mjs';
 import userRouter from './routes/users-routes.mjs';
 import authRouter from './routes/auth-routes.mjs';
 import errorHandler from './middleware/errorHandler.mjs';
@@ -15,6 +15,7 @@ await connectDB();
 //const chainDB = await new BlockChainRepository().get();
 
 export const blockChain = new Blockchain();
+export const minerWallet = new Wallet();
 export const transactionPool = new TransactionPool();
 export const networkServer = new Network({
 	blockchain: blockChain,
